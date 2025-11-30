@@ -2,10 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# --- 1. SETUP ---
 file = '/Users/mariamotovylets/Downloads/studying/python/data_science/gun_violence_data_2013_2018.xlsx'
 
-# Population Data
+# Population data
 pop_data = {
     'Alabama': 4863300, 'Alaska': 741894, 'Arizona': 6931071, 'Arkansas': 2988248,
     'California': 39250017, 'Colorado': 5540545, 'Connecticut': 3576452, 'Delaware': 952065,
@@ -22,7 +21,7 @@ pop_data = {
     'West Virginia': 1831102, 'Wisconsin': 5778708, 'Wyoming': 585501
 }
 
-# Regions Mapping
+# Regions mapping
 regions = {
     'Connecticut': 'Northeast', 'Maine': 'Northeast', 'Massachusetts': 'Northeast', 'New Hampshire': 'Northeast', 
     'Rhode Island': 'Northeast', 'Vermont': 'Northeast', 'New Jersey': 'Northeast', 'New York': 'Northeast', 
@@ -39,7 +38,6 @@ regions = {
     'Hawaii': 'West', 'Oregon': 'West', 'Washington': 'West'
 }
 
-# --- 2. LOAD & PROCESS ---
 try:
     print("Loading Excel file...")
     raw = pd.read_excel(file)
@@ -55,43 +53,43 @@ df = df.rename(columns={'n_killed': 'murders'})
 pop = pd.DataFrame(list(pop_data.items()), columns=['state', 'population'])
 data = pd.merge(df, pop, on='state')
 
-# Add Region and Rate
+# Add region and rate
 data['region'] = data['state'].map(regions)
 data['rate'] = (data['murders'] / data['population']) * 100000
 data['rate'] = data['rate'].round(2)
 
-# Save CSV
-data.to_csv('final_data.csv', index=False)
-print("✅ CSV file saved.")
+#Save CSV
+data.to_csv('clean_data.csv', index=False)
+print("CSV file saved.")
 
-# --- 3. PLOT 1: SCATTER PLOT (Population vs Murders) ---
+#Population vs murders
 print("Generating Plot 1...")
 plt.figure(figsize=(10, 6))
 
-# Create Scatter Plot
+#Create scatter plot
 sns.scatterplot(data=data, x='population', y='murders', size='rate', hue='rate', sizes=(50, 400), palette='coolwarm')
 
-# Labels
+#Labels
 plt.title('Population vs Total Murders (Color = Danger Rate)')
 plt.xlabel('Population')
 plt.ylabel('Total Murders')
 plt.grid(True, alpha=0.3)
 
-# Save Plot 1
+#Save plot1
 plt.savefig('plot1_population.png')
-print("✅ Plot 1 saved as 'plot1_population.png'")
+print("Plot 1 saved as 'plot1_population.png'")
 plt.show() # Show window (close it to continue)
 
-# --- 4. PLOT 2: BOX PLOT (Regions) ---
+# Regions
 print("Generating Plot 2...")
 plt.figure(figsize=(10, 6)) # Create a new empty figure
 
-# Create Box Plot
+#Create box plot
 sns.boxplot(data=data, x='region', y='rate', palette="Set3")
 plt.title('Murder Rate Distribution by Region')
 plt.ylabel('Murder Rate (per 100k)')
 
-# Save Plot 2
+#Save plot2
 plt.savefig('plot2_regions.png')
-print("✅ Plot 2 saved as 'plot2_regions.png'")
+print("Plot 2 saved as 'plot2_regions.png'")
 plt.show()
